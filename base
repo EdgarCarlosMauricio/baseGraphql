@@ -9,14 +9,15 @@ import string
 import graphene
 from collections import namedtuple
 __version__ = "3.0.1"
-import base_t_querys
-import base_t_mutations
+import base_t
 
 # 2. Global
 pg_conn = None
 response_body = ""
 
 # 3. PgSql
+
+
 def pg_connect():
     global pg_conn, response_body
 
@@ -26,21 +27,26 @@ def pg_connect():
         response_body = "Notice: check DB Conn"
 
 # 2. Query
+
+
 class QueryEstandar(graphene.ObjectType):
     global pg_conn
 
-    pqrs = graphene.List(base_t_querys.TotalUsuarios,
-                         tipo_filter=graphene.String(), data_filter=graphene.String())
+    usuarios = graphene.List(
+        base_t.TotalUsuarios, tipo_filter=graphene.String(), data_filter=graphene.String())
+
     def resolve_usuarios(self, info, tipo_filter, data_filter):
-        return base_t_querys.get_usuarios(pg_conn, tipo_filter, data_filter)
+        return base_t.get_usuarios(pg_conn, tipo_filter, data_filter)
+
 
 # 3. Mutation
 class MutationEstandar(graphene.ObjectType):
-    insert_pqrs = base_t_mutations.ModifyPqrsNewxx.Field()
+    insert_pqrs = base_t.ModifyPqrsNewxx.Field()
 
 
 # 4. Schemas
-schema_estandar = graphene.Schema(query=QueryEstandar, mutation=MutationEstandar)
+schema_estandar = graphene.Schema(
+    query=QueryEstandar, mutation=MutationEstandar)
 
 
 # 6. Service
